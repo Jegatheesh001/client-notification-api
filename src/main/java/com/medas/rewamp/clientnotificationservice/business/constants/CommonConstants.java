@@ -17,4 +17,7 @@ public class CommonConstants {
 	public static final String NOT_AVAILABLE = "Not available";
 	public static final String SUCCESS = "success";
 	
+	public static final String SMS = "sms";
+	public static final String EMAIL = "email";
+	
 }
