@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.medas.rewamp.clientnotificationservice.business.vo.ApiResponseVO;
+import com.medas.rewamp.clientnotificationservice.business.vo.ApiResponse;
 import com.medas.rewamp.clientnotificationservice.business.vo.NotificationParamVO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,27 +32,27 @@ public class NotificationApiProxy {
 	@Value("${app.link.notification-api}")
 	private String notificationApiLink;
 
-	public ApiResponseVO<Void> saveAPI(NotificationParamVO notificationVO) {
+	public ApiResponse<Void> saveAPI(NotificationParamVO notificationVO) {
 		try {
-			ResponseEntity<ApiResponseVO<Void>> reponse = template.exchange(notificationApiLink + "/notification",
+			ResponseEntity<ApiResponse<Void>> reponse = template.exchange(notificationApiLink + "/notification",
 					HttpMethod.POST, new HttpEntity<>(notificationVO),
-					new ParameterizedTypeReference<ApiResponseVO<Void>>() { });
+					new ParameterizedTypeReference<ApiResponse<Void>>() { });
 			return reponse.getBody();
 		} catch (Exception e) {
 			log.error("Error on pushing message to cloud: " + e.getMessage());
-			return new ApiResponseVO<>(false, "Connection issue");
+			return new ApiResponse<>(false, "Connection issue");
 		}
 	}
 	
-	public ApiResponseVO<Void> cancelAPI(NotificationParamVO notificationVO) {
+	public ApiResponse<Void> cancelAPI(NotificationParamVO notificationVO) {
 		try {
-			ResponseEntity<ApiResponseVO<Void>> reponse = template.exchange(notificationApiLink + "/notification/" 
+			ResponseEntity<ApiResponse<Void>> reponse = template.exchange(notificationApiLink + "/notification/" 
 					+ notificationVO.getReferId(), HttpMethod.PUT,
-					new HttpEntity<>(notificationVO), new ParameterizedTypeReference<ApiResponseVO<Void>>() { });
+					new HttpEntity<>(notificationVO), new ParameterizedTypeReference<ApiResponse<Void>>() { });
 			return reponse.getBody();
 		} catch (Exception e) {
 			log.error("Error on pushing message to cloud: " + e.getMessage());
-			return new ApiResponseVO<>(false, "Connection issue");
+			return new ApiResponse<>(false, "Connection issue");
 		}
 	}
 }

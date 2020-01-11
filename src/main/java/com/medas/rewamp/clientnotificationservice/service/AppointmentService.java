@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.medas.rewamp.clientnotificationservice.business.constants.CommonConstants;
-import com.medas.rewamp.clientnotificationservice.business.vo.ApiResponseVO;
+import com.medas.rewamp.clientnotificationservice.business.vo.ApiResponse;
 import com.medas.rewamp.clientnotificationservice.business.vo.AppointParamVO;
 import com.medas.rewamp.clientnotificationservice.business.vo.NotificationParamVO;
 
@@ -32,11 +32,11 @@ public class AppointmentService {
 	@Value("${app.clientId}")
 	private String clientId;
 
-	public ApiResponseVO<Void> registerNewAppointment(AppointParamVO paramVO) {
+	public ApiResponse<Void> registerNewAppointment(AppointParamVO paramVO) {
 		return pushNewAppointmentToCloud(paramVO);
 	}
 
-	private ApiResponseVO<Void> pushNewAppointmentToCloud(AppointParamVO paramVO) {
+	private ApiResponse<Void> pushNewAppointmentToCloud(AppointParamVO paramVO) {
 		LocalDateTime currentTime = LocalDateTime.now();
 		LocalDateTime notificationTime = currentTime;
 
@@ -44,7 +44,7 @@ public class AppointmentService {
 				paramVO.getMobileNo(), paramVO.getAppointTemplate(), notificationTime, currentTime, clientId,
 				paramVO.getOfficeId());
 		// Instant Message
-		ApiResponseVO<Void> out = proxy.saveAPI(notificationVO);
+		ApiResponse<Void> out = proxy.saveAPI(notificationVO);
 		log.info(out.toString());
 		// Before 24 hours
 		notificationTime = paramVO.getAppointTime().minusHours(24);
@@ -63,29 +63,29 @@ public class AppointmentService {
 		return out;
 	}
 
-	public ApiResponseVO<Void> cancelAppointment(AppointParamVO paramVO) {
+	public ApiResponse<Void> cancelAppointment(AppointParamVO paramVO) {
 		return pushCancelAppointmentToCloud(paramVO, paramVO.getAppointId());
 	}
 
-	private ApiResponseVO<Void> pushCancelAppointmentToCloud(AppointParamVO paramVO, Integer appointId) {
+	private ApiResponse<Void> pushCancelAppointmentToCloud(AppointParamVO paramVO, Integer appointId) {
 		LocalDateTime currentTime = LocalDateTime.now();
 		NotificationParamVO notificationVO = new NotificationParamVO("app", appointId, CommonConstants.SMS, null, null,
 				null, currentTime, clientId, paramVO.getOfficeId());
 		return proxy.cancelAPI(notificationVO);
 	}
 
-	public ApiResponseVO<Void> rescheduleAppointment(AppointParamVO paramVO) {
+	public ApiResponse<Void> rescheduleAppointment(AppointParamVO paramVO) {
 		pushCancelAppointmentToCloud(paramVO, paramVO.getOldAppointId());
 		return pushNewAppointmentToCloud(paramVO);
 	}
 
-	public ApiResponseVO<Void> sendSms(AppointParamVO paramVO) {
+	public ApiResponse<Void> sendSms(AppointParamVO paramVO) {
 		// Instant Message
 		LocalDateTime currentTime = LocalDateTime.now();
 		NotificationParamVO notificationVO = new NotificationParamVO("app", paramVO.getAppointId(), CommonConstants.SMS,
 				paramVO.getMobileNo(), paramVO.getAppointTemplate(), currentTime, currentTime, clientId,
 				paramVO.getOfficeId());
-		ApiResponseVO<Void> out = proxy.saveAPI(notificationVO);
+		ApiResponse<Void> out = proxy.saveAPI(notificationVO);
 		log.info(out.toString());
 		return out;
 	}

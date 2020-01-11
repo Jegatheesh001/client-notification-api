@@ -10,15 +10,15 @@ import lombok.Data;
  * @param <T>
  */
 @Data
-public class ApiResponseVO<T> {
+public class ApiResponse<T> {
 	private boolean success;
 	private String message;
 	private T data;
 	
-	public ApiResponseVO() {
+	public ApiResponse() {
 		super();
 	}
-	public ApiResponseVO(boolean success, String message) {
+	public ApiResponse(boolean success, String message) {
 		super();
 		this.success = success;
 		this.message = message;
