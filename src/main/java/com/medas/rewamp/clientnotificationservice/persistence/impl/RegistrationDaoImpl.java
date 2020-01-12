@@ -26,7 +26,7 @@ public class RegistrationDaoImpl implements RegistratonDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<BirthdayDetailsVO> getBirthDayPatientsByCriteria(LocalDateTime date) {
-		String queryStr = "select new com.medas.rewamp.clientnotificationservice.business.vo.BirthdayDetailsVO(patientName, concat(mobileCode, ' ', mobile)) "
+		String queryStr = "select new com.medas.rewamp.clientnotificationservice.business.vo.BirthdayDetailsVO(registrationId, patientName, concat(mobileCode, mobile)) "
 				+ "from Registration where function('day', dateOfBirth) = :day and function('month', dateOfBirth) =:month ";
 		return em.createQuery(queryStr).setParameter("day", date.getDayOfMonth()).setParameter("month", date.getMonthValue()).getResultList();
 	}

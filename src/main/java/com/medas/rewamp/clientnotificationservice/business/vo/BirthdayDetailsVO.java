@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BirthdayDetailsVO {
-
+	
+	private Integer opId; // Primary key of Registration table
 	private String patientName;
 	private String mobileNo;
 	

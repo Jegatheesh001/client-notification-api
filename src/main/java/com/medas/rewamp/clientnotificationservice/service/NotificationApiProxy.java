@@ -40,7 +40,7 @@ public class NotificationApiProxy {
 			return reponse.getBody();
 		} catch (Exception e) {
 			log.error("Error on pushing message to cloud: " + e.getMessage());
-			return new ApiResponse<>(false, "Connection issue");
+			return new ApiResponse<>(false, "Issue: " + e.getMessage());
 		}
 	}
 	
@@ -52,7 +52,7 @@ public class NotificationApiProxy {
 			return reponse.getBody();
 		} catch (Exception e) {
 			log.error("Error on pushing message to cloud: " + e.getMessage());
-			return new ApiResponse<>(false, "Connection issue");
+			return new ApiResponse<>(false, "Issue: " + e.getMessage());
 		}
 	}
 }
