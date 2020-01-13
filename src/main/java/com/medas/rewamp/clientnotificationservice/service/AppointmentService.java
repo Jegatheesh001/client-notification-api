@@ -9,6 +9,7 @@ import com.medas.rewamp.clientnotificationservice.business.constants.CommonConst
 import com.medas.rewamp.clientnotificationservice.business.vo.ApiResponse;
 import com.medas.rewamp.clientnotificationservice.business.vo.AppointParamVO;
 import com.medas.rewamp.clientnotificationservice.business.vo.NotificationParamVO;
+import com.medas.rewamp.clientnotificationservice.business.vo.TemplateVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,19 +47,16 @@ public class AppointmentService {
 		// Instant Message
 		ApiResponse<Void> out = proxy.saveAPI(notificationVO);
 		log.info(out.toString());
-		// Before 24 hours
-		notificationTime = paramVO.getAppointTime().minusHours(24);
-		if (notificationTime.isAfter(currentTime)) {
-			notificationVO.setNotificationTime(notificationTime);
-			out = proxy.saveAPI(notificationVO);
-			log.info(out.toString());
-		}
-		// Before 8 hours
-		notificationTime = paramVO.getAppointTime().minusHours(8);
-		if (notificationTime.isAfter(currentTime)) {
-			notificationVO.setNotificationTime(notificationTime);
-			out = proxy.saveAPI(notificationVO);
-			log.info(out.toString());
+		if (paramVO.getTemplates() != null && !paramVO.getTemplates().isEmpty()) {
+			for (TemplateVO template : paramVO.getTemplates()) {
+				notificationTime = paramVO.getAppointTime().minusHours(template.getTimeBefore());
+				if (notificationTime.isAfter(currentTime)) {
+					notificationVO.setNotificationTime(notificationTime);
+					notificationVO.setNotificationTemplate(template.getTemplate());
+					out = proxy.saveAPI(notificationVO);
+					log.info(out.toString());
+				}
+			}
 		}
 		return out;
 	}

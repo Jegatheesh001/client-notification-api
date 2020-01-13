@@ -1,6 +1,9 @@
 package com.medas.rewamp.clientnotificationservice.business.vo;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
 
@@ -18,4 +21,6 @@ public class AppointParamVO {
 	private LocalDateTime appointTime;
 	private String mobileNo;
 	private Integer officeId;
+	@JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+	private List<TemplateVO> templates;
 }

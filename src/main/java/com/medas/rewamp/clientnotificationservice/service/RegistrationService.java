@@ -40,6 +40,9 @@ public class RegistrationService {
 	
 	@Value("${app.sms.birthday.template}")
 	private String birthdayTemplate;
+	
+	@Value("${app.reminder.birthday}")
+	private Integer birthdayCheck;
 
 	public List<BirthdayDetailsVO> getAllNextDayBirthDayPatients() {
 		LocalDateTime tomorrow = LocalDateTime.now().plusDays(1);
@@ -47,6 +50,9 @@ public class RegistrationService {
 	}
 
 	public void sendBirthdayReminderToPatients() {
+		if(birthdayCheck == 0) {
+			throw new UnsupportedOperationException("Birthday Reminder Not Enabled");
+		}
 		LocalDateTime currentTime = LocalDateTime.now();
 		// Setting Basic Details
 		NotificationParamVO notificationVO = new NotificationParamVO("reg", null, CommonConstants.SMS, null, null,
