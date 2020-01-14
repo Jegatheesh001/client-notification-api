@@ -44,9 +44,12 @@ public class AppointmentService {
 		NotificationParamVO notificationVO = new NotificationParamVO("app", paramVO.getAppointId(), CommonConstants.SMS,
 				paramVO.getMobileNo(), paramVO.getAppointTemplate(), notificationTime, currentTime, clientId,
 				paramVO.getOfficeId());
-		// Instant Message
-		ApiResponse<Void> out = proxy.saveAPI(notificationVO);
-		log.info(out.toString());
+		ApiResponse<Void> out = null;
+		if (paramVO.getAppointTemplate() != null) {
+			// Instant Message
+			out = proxy.saveAPI(notificationVO);
+			log.info(out.toString());
+		}
 		if (paramVO.getTemplates() != null && !paramVO.getTemplates().isEmpty()) {
 			for (TemplateVO template : paramVO.getTemplates()) {
 				notificationTime = paramVO.getAppointTime().minusHours(template.getTimeBefore());
@@ -70,6 +73,11 @@ public class AppointmentService {
 		NotificationParamVO notificationVO = new NotificationParamVO("app", appointId, CommonConstants.SMS, null, null,
 				null, currentTime, clientId, paramVO.getOfficeId());
 		return proxy.cancelAPI(notificationVO);
+	}
+
+	public ApiResponse<Void> updateAppointment(AppointParamVO paramVO) {
+		pushCancelAppointmentToCloud(paramVO, paramVO.getAppointId());
+		return pushNewAppointmentToCloud(paramVO);
 	}
 
 	public ApiResponse<Void> rescheduleAppointment(AppointParamVO paramVO) {
