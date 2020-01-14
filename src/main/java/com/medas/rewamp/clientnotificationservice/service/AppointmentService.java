@@ -42,11 +42,12 @@ public class AppointmentService {
 		LocalDateTime notificationTime = currentTime;
 
 		NotificationParamVO notificationVO = new NotificationParamVO("app", paramVO.getAppointId(), CommonConstants.SMS,
-				paramVO.getMobileNo(), paramVO.getAppointTemplate(), notificationTime, currentTime, clientId,
+				paramVO.getMobileNo(), paramVO.getAppointTemplate(), null, notificationTime, currentTime, clientId,
 				paramVO.getOfficeId());
 		ApiResponse<Void> out = null;
 		if (paramVO.getAppointTemplate() != null) {
 			// Instant Message
+			notificationVO.setInstant("Y");
 			out = proxy.saveAPI(notificationVO);
 			log.info(out.toString());
 		}
@@ -54,6 +55,7 @@ public class AppointmentService {
 			for (TemplateVO template : paramVO.getTemplates()) {
 				notificationTime = paramVO.getAppointTime().minusHours(template.getTimeBefore());
 				if (notificationTime.isAfter(currentTime)) {
+					notificationVO.setInstant("N");
 					notificationVO.setNotificationTime(notificationTime);
 					notificationVO.setNotificationTemplate(template.getTemplate());
 					out = proxy.saveAPI(notificationVO);
@@ -70,7 +72,7 @@ public class AppointmentService {
 
 	private ApiResponse<Void> pushCancelAppointmentToCloud(AppointParamVO paramVO, Integer appointId) {
 		LocalDateTime currentTime = LocalDateTime.now();
-		NotificationParamVO notificationVO = new NotificationParamVO("app", appointId, CommonConstants.SMS, null, null,
+		NotificationParamVO notificationVO = new NotificationParamVO("app", appointId, CommonConstants.SMS, null, null, "Y",
 				null, currentTime, clientId, paramVO.getOfficeId());
 		return proxy.cancelAPI(notificationVO);
 	}
@@ -89,7 +91,7 @@ public class AppointmentService {
 		// Instant Message
 		LocalDateTime currentTime = LocalDateTime.now();
 		NotificationParamVO notificationVO = new NotificationParamVO("app", paramVO.getAppointId(), CommonConstants.SMS,
-				paramVO.getMobileNo(), paramVO.getAppointTemplate(), currentTime, currentTime, clientId,
+				paramVO.getMobileNo(), paramVO.getAppointTemplate(), "Y", currentTime, currentTime, clientId,
 				paramVO.getOfficeId());
 		ApiResponse<Void> out = proxy.saveAPI(notificationVO);
 		log.info(out.toString());

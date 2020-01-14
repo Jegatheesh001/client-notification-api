@@ -55,7 +55,7 @@ public class RegistrationService {
 		}
 		LocalDateTime currentTime = LocalDateTime.now();
 		// Setting Basic Details
-		NotificationParamVO notificationVO = new NotificationParamVO("reg", null, CommonConstants.SMS, null, null,
+		NotificationParamVO notificationVO = new NotificationParamVO("reg", null, CommonConstants.SMS, null, null, "Y",
 				currentTime, currentTime, clientId, birthdayOffice != null ? birthdayOffice : 0);
 		List<BirthdayDetailsVO> dataList = getAllNextDayBirthDayPatients();
 		ApiResponse<Void> response = null;
