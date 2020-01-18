@@ -1,6 +1,7 @@
 package com.medas.rewamp.clientnotificationservice.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -8,8 +9,11 @@ import org.springframework.stereotype.Service;
 import com.medas.rewamp.clientnotificationservice.business.constants.CommonConstants;
 import com.medas.rewamp.clientnotificationservice.business.vo.ApiResponse;
 import com.medas.rewamp.clientnotificationservice.business.vo.AppointParamVO;
+import com.medas.rewamp.clientnotificationservice.business.vo.AppointSchedulerDataVO;
+import com.medas.rewamp.clientnotificationservice.business.vo.AppointSchedulerVO;
 import com.medas.rewamp.clientnotificationservice.business.vo.NotificationParamVO;
 import com.medas.rewamp.clientnotificationservice.business.vo.TemplateVO;
+import com.medas.rewamp.clientnotificationservice.persistence.AppointmentDao;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,14 +28,20 @@ import lombok.extern.slf4j.Slf4j;
 public class AppointmentService {
 
 	private NotificationApiProxy proxy;
+	
+	private AppointmentDao dao;
 
-	public AppointmentService(NotificationApiProxy proxy) {
+	public AppointmentService(NotificationApiProxy proxy, AppointmentDao dao) {
 		super();
 		this.proxy = proxy;
+		this.dao = dao;
 	}
 
 	@Value("${app.clientId}")
 	private String clientId;
+	
+	@Value("${app.reminder.sms.appUnconfirmed}")
+	private Integer appUnconfirmed;
 
 	public ApiResponse<Void> registerNewAppointment(AppointParamVO paramVO) {
 		return pushNewAppointmentToCloud(paramVO);
@@ -79,12 +89,14 @@ public class AppointmentService {
 
 	public ApiResponse<Void> updateAppointment(AppointParamVO paramVO) {
 		pushCancelAppointmentToCloud(paramVO, paramVO.getAppointId());
-		return pushNewAppointmentToCloud(paramVO);
+		pushNewAppointmentToCloud(paramVO);
+		return new ApiResponse<>(true, null);
 	}
 
 	public ApiResponse<Void> rescheduleAppointment(AppointParamVO paramVO) {
 		pushCancelAppointmentToCloud(paramVO, paramVO.getOldAppointId());
-		return pushNewAppointmentToCloud(paramVO);
+		pushNewAppointmentToCloud(paramVO);
+		return new ApiResponse<>(true, null);
 	}
 
 	public ApiResponse<Void> sendSms(AppointParamVO paramVO) {
@@ -96,6 +108,26 @@ public class AppointmentService {
 		ApiResponse<Void> out = proxy.saveAPI(notificationVO);
 		log.info(out.toString());
 		return out;
+	}
+
+	public void appointmentNotConfirmedPatientCheck() {
+		if(appUnconfirmed == 0) {
+			throw new UnsupportedOperationException("Appointment Unconfirmed Reminder Not Enabled");
+		}
+		LocalDateTime currentTime = LocalDateTime.now();
+		List<AppointSchedulerVO> scheduleList = dao.checkForSchedulers(currentTime);
+		String template = null;
+		for (AppointSchedulerVO scheduler : scheduleList) {
+			List<AppointSchedulerDataVO> dataList = dao.appointmentNotConfirmedPatientList(currentTime, scheduler.getPrior());
+			for (AppointSchedulerDataVO data : dataList) {
+				// Instant Message
+				NotificationParamVO notificationVO = new NotificationParamVO("app", data.getAppointId(),
+						CommonConstants.SMS, data.getMobileNo(), template, "Y", currentTime, currentTime, clientId,
+						data.getOfficeId());
+				ApiResponse<Void> out = proxy.saveAPI(notificationVO);
+				log.info(out.toString());
+			}
+		}
 	}
 
 }

@@ -41,7 +41,7 @@ public class RegistrationService {
 	@Value("${app.sms.birthday.template}")
 	private String birthdayTemplate;
 	
-	@Value("${app.reminder.birthday}")
+	@Value("${app.reminder.sms.birthday}")
 	private Integer birthdayCheck;
 
 	public List<BirthdayDetailsVO> getAllNextDayBirthDayPatients() {
