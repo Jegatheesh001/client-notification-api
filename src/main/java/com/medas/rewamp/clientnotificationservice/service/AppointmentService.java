@@ -14,6 +14,7 @@ import com.medas.rewamp.clientnotificationservice.business.vo.AppointSchedulerVO
 import com.medas.rewamp.clientnotificationservice.business.vo.NotificationParamVO;
 import com.medas.rewamp.clientnotificationservice.business.vo.TemplateVO;
 import com.medas.rewamp.clientnotificationservice.persistence.AppointmentDao;
+import com.medas.rewamp.clientnotificationservice.utils.DateUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -116,18 +117,29 @@ public class AppointmentService {
 		}
 		LocalDateTime currentTime = LocalDateTime.now();
 		List<AppointSchedulerVO> scheduleList = dao.checkForSchedulers(currentTime);
+		log.info("Total Schedulers: {}", scheduleList.size());
 		String template = null;
 		for (AppointSchedulerVO scheduler : scheduleList) {
 			List<AppointSchedulerDataVO> dataList = dao.appointmentNotConfirmedPatientList(currentTime, scheduler.getPrior());
+			template = scheduler.getTemplate();
+			log.info("Scheduler on {} prior {}", currentTime, scheduler.getPrior());
+			log.info("Total: {} -> template: {}", dataList.size(), template);
 			for (AppointSchedulerDataVO data : dataList) {
 				// Instant Message
 				NotificationParamVO notificationVO = new NotificationParamVO("app", data.getAppointId(),
-						CommonConstants.SMS, data.getMobileNo(), template, "Y", currentTime, currentTime, clientId,
+						CommonConstants.SMS, data.getMobileNo(), fillTemplateWithData(template, data), "Y", currentTime, currentTime, clientId,
 						data.getOfficeId());
 				ApiResponse<Void> out = proxy.saveAPI(notificationVO);
-				log.info(out.toString());
+				if(out.isSuccess())
+					log.info("Data: {} | Response: {}", notificationVO, out.toString());
+				else
+					log.error("Data: {} | Response: {}", notificationVO, out.toString());
 			}
 		}
+	}
+
+	private String fillTemplateWithData(String template, AppointSchedulerDataVO data) {
+		return template.replace("#patientName#", data.getPatientName()).replace("#appointDate#", DateUtil.formatDate("1", data.getAppointDate()));
 	}
 
 }

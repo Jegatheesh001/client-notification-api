@@ -30,10 +30,10 @@ public class AppointmentDaoImpl implements AppointmentDao {
 	@Override
 	public List<AppointSchedulerDataVO> appointmentNotConfirmedPatientList(LocalDateTime currentTime, Integer prior) {
 		String queryStr = "select new com.medas.rewamp.clientnotificationservice.business.vo.AppointSchedulerDataVO(appointId, "
-				+ "appointName, concat(mobileCode, mobile), officeId) "
+				+ "appointName, concat(mobileCode, mobile), appointDate, officeId) "
 				+ "from Appointment where appointDate = :appointDate and cancelStatus = 'N' and confirmStatus = 'N' "
 				+ "and callStatus is not null and callStatus != :confirmed and callStatus != :cancelled";
-		return em.createQuery(queryStr).setParameter("appointDate", currentTime.plusDays(prior))
+		return em.createQuery(queryStr).setParameter("appointDate", currentTime.plusDays(prior).toLocalDate())
 				.setParameter("confirmed", AppointCallStatus.CONFIRMED)
 				.setParameter("cancelled", AppointCallStatus.CANCELLED).getResultList();
 	}
