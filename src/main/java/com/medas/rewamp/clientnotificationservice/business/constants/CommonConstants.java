@@ -20,4 +20,7 @@ public class CommonConstants {
 	public static final String SMS = "sms";
 	public static final String EMAIL = "email";
 	
+	public static final String DOT = ".";
+	public static final String UNDERSCORE = "_";
+	
 }

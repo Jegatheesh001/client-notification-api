@@ -1,8 +1,8 @@
 package com.medas.rewamp.clientnotificationservice.business.vo;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class NotificationParamVO {
 	/**
 	 * Notification reference type (to distinguish notification of multiple module). eg app/reg
@@ -38,6 +37,10 @@ public class NotificationParamVO {
 	 */
 	private String notificationTemplate;
 	/**
+	 * Notification Subject
+	 */
+	private String notificationSubject;
+	/**
 	 * Instant Message
 	 */
 	private String instant;
@@ -46,4 +49,67 @@ public class NotificationParamVO {
 	private String clientId;
 	private Integer branchId;
 	
+	private List<NotificationAttachmentVO> attachments;
+	
+	/**
+	 * For Sending SMS Notifications
+	 * 
+	 * @param referType
+	 * @param referId
+	 * @param notificationType
+	 * @param notificationId
+	 * @param notificationTemplate
+	 * @param instant
+	 * @param notificationTime
+	 * @param currentTime
+	 * @param clientId
+	 * @param branchId
+	 */
+	public NotificationParamVO(String referType, Integer referId, String notificationType, String notificationId,
+			String notificationTemplate, String instant, LocalDateTime notificationTime, LocalDateTime currentTime,
+			String clientId, Integer branchId) {
+		super();
+		this.referType = referType;
+		this.referId = referId;
+		this.notificationType = notificationType;
+		this.notificationId = notificationId;
+		this.notificationTemplate = notificationTemplate;
+		this.instant = instant;
+		this.notificationTime = notificationTime;
+		this.currentTime = currentTime;
+		this.clientId = clientId;
+		this.branchId = branchId;
+	}
+	
+	/**
+	 * For Sending mail
+	 * 
+	 * @param referType
+	 * @param referId
+	 * @param notificationType
+	 * @param notificationId
+	 * @param notificationTemplate
+	 * @param instant
+	 * @param notificationTime
+	 * @param currentTime
+	 * @param clientId
+	 * @param branchId
+	 */
+	public NotificationParamVO(String referType, Integer referId, String notificationType, String notificationId,
+			String notificationTemplate, String notificationSubject, String instant, LocalDateTime notificationTime, LocalDateTime currentTime,
+			String clientId, Integer branchId, List<NotificationAttachmentVO> attachments) {
+		super();
+		this.referType = referType;
+		this.referId = referId;
+		this.notificationType = notificationType;
+		this.notificationId = notificationId;
+		this.notificationTemplate = notificationTemplate;
+		this.notificationSubject = notificationSubject;
+		this.instant = instant;
+		this.notificationTime = notificationTime;
+		this.currentTime = currentTime;
+		this.clientId = clientId;
+		this.branchId = branchId;
+		this.attachments = attachments;
+	}
 }
