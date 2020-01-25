@@ -2,6 +2,7 @@ package com.medas.rewamp.clientnotificationservice.business.entity;
 
 import java.time.LocalTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -22,7 +23,10 @@ public class AppointmentScheduler {
 	@Id
 	@GeneratedValue
 	private Integer schedulerId;
+	@Column(nullable = false)
 	private LocalTime runAt;
+	@Column(nullable = false)
 	private Integer prior;
+	@Column(nullable = false)
 	private String template;
 }

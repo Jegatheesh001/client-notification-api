@@ -24,6 +24,7 @@ public class MailParamVO {
 	@NotNull(message = "E-mail Refer Id should not be blank")
 	private Integer mailRequestId;
 	@ApiModelProperty(notes = "E-mail Id")
+	@NotNull(message = "E-mail Id should not be blank")
 	@Pattern(regexp = "^(.+)@(.+)$", message = "Not a valid mail") 
 	private String mailId;
 	@NotNull(message = "E-mail Subject should not be blank")
