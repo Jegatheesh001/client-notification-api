@@ -31,4 +31,9 @@ public class ApiResponse<T> {
 		this.success = success;
 		this.message = message;
 	}
+	public ApiResponse(T data) {
+		super();
+		this.success = true;
+		this.data = data;
+	}
 }
