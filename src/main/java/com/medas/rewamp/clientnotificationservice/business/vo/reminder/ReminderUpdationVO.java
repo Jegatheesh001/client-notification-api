@@ -8,13 +8,14 @@ import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 /**
+ * For Reminder Updation
  *
  * @author jegatheesh.mageswaran<br>
  *		   <b>Created</b> On Feb 17, 2020
  *
  */
 @Data
-@ApiModel(description = "Reminder Creation")
+@ApiModel(description = "Reminder Updation")
 public class ReminderUpdationVO {
 	@NotNull(message = "Reminder Id should not be blank")
 	private Integer reminderId;
