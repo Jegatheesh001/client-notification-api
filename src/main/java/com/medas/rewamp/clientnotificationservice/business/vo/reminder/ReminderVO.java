@@ -22,6 +22,7 @@ public class ReminderVO {
 	private LocalDate followupDate;
 	private String subject;
 	private String contact;
+	private String closedStatus;
 	
 	/**
 	 * For query getAllReminders in ReminderDaoImpl
@@ -33,9 +34,10 @@ public class ReminderVO {
 	 * @param followupDate
 	 * @param subject
 	 * @param contact
+	 * @param closedStatus
 	 */
 	public ReminderVO(String reminderType, Integer reminderReferId, Integer createdBy, Integer followupBy,
-			LocalDate followupDate, String subject, String contact) {
+			LocalDate followupDate, String subject, String contact, String closedStatus) {
 		super();
 		this.reminderType = reminderType;
 		this.reminderReferId = reminderReferId;
@@ -44,5 +46,6 @@ public class ReminderVO {
 		this.followupDate = followupDate;
 		this.subject = subject;
 		this.contact = contact;
+		this.closedStatus = closedStatus;
 	}
 }

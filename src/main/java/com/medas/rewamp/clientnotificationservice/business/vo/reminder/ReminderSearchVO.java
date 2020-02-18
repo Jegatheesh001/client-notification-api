@@ -1,5 +1,7 @@
 package com.medas.rewamp.clientnotificationservice.business.vo.reminder;
 
+import java.time.LocalDate;
+
 import lombok.Data;
 
 /**
@@ -11,5 +13,10 @@ import lombok.Data;
  */
 @Data
 public class ReminderSearchVO {
-	private String remarks;
+	private String reminderType;
+	private String subject;
+	private Integer createdBy;
+	private Integer followupBy;
+	private LocalDate followupDate;
+	private String closedStatus;
 }

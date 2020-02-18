@@ -1,10 +1,13 @@
 package com.medas.rewamp.clientnotificationservice.persistence.impl;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
@@ -57,9 +60,44 @@ public class ReminderDaoImpl implements ReminderDao {
 	@Override
 	public List<ReminderVO> getAllReminders(ReminderSearchVO reminderVO) {
 		String queryStr = "select new com.medas.rewamp.clientnotificationservice.business.vo.reminder.ReminderVO(reminderType, reminderReferId, "
-				+ "createdBy, followupBy, followupDate, subject, contact) "
+				+ "createdBy, followupBy, followupDate, subject, contact, closedStatus) "
 				+ "from ReminderHeader where reminderId > 0 ";
-		return em.createQuery(queryStr).getResultList();
+		StringBuilder queryBuilder = new StringBuilder(queryStr);
+		Map<String, Object> params = new HashMap<>();
+		setReminderSearchParams(reminderVO, queryBuilder, params);
+		Query query = em.createQuery(queryBuilder.toString());
+		params.forEach(query::setParameter);
+		return query.getResultList();
+	}
+
+	private void setReminderSearchParams(ReminderSearchVO reminderVO, StringBuilder queryBuilder,
+			Map<String, Object> params) {
+		if (reminderVO != null) {
+			if (reminderVO.getReminderType() != null && !reminderVO.getReminderType().trim().isEmpty()) {
+				queryBuilder.append("and reminderType=:reminderType ");
+				params.put("reminderType", reminderVO.getReminderType());
+			}
+			if (reminderVO.getSubject() != null && !reminderVO.getSubject().trim().isEmpty()) {
+				queryBuilder.append("and subject like :subject ");
+				params.put("subject", "%" + reminderVO.getSubject() + "%");
+			}
+			if (reminderVO.getCreatedBy() != null && reminderVO.getCreatedBy() > 0) {
+				queryBuilder.append("and createdBy=:createdBy ");
+				params.put("createdBy", reminderVO.getCreatedBy());
+			}
+			if (reminderVO.getFollowupBy() != null && reminderVO.getFollowupBy() > 0) {
+				queryBuilder.append("and followupBy=:followupBy ");
+				params.put("followupBy", reminderVO.getFollowupBy());
+			}
+			if(reminderVO.getFollowupDate() != null) {
+				queryBuilder.append("and followupDate=:followupDate ");
+				params.put("followupDate", reminderVO.getFollowupDate());
+			}
+			if (reminderVO.getClosedStatus() != null && !reminderVO.getClosedStatus().trim().isEmpty()) {
+				queryBuilder.append("and closedStatus=:closedStatus ");
+				params.put("closedStatus", reminderVO.getClosedStatus());
+			}
+		}
 	}
 
 	@Override
