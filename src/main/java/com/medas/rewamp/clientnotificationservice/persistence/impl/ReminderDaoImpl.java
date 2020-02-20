@@ -47,9 +47,10 @@ public class ReminderDaoImpl implements ReminderDao {
 
 	@Override
 	public boolean updateReminder(ReminderUpdationVO reminderVO) {
-		String queryStr = "update ReminderHeader set followupDate=:followupDate, lastUpdated=:currentTime "
+		String queryStr = "update ReminderHeader set followupBy=:followupBy, followupDate=:followupDate, lastUpdated=:currentTime "
 				+ "where reminderId = :reminderId";
 		em.createQuery(queryStr).setParameter(ReminderConstants.REMINDER_ID, reminderVO.getReminderId())
+				.setParameter("followupBy", reminderVO.getFollowupBy())
 				.setParameter("followupDate", reminderVO.getFollowupDate())
 				.setParameter("currentTime", LocalDateTime.now()).executeUpdate();
 		ReminderDetails reminder = new ReminderDetails(reminderVO);
@@ -65,6 +66,7 @@ public class ReminderDaoImpl implements ReminderDao {
 		StringBuilder queryBuilder = new StringBuilder(queryStr);
 		Map<String, Object> params = new HashMap<>();
 		setReminderSearchParams(reminderVO, queryBuilder, params);
+		queryBuilder.append("order by closedStatus, reminderId desc");
 		Query query = em.createQuery(queryBuilder.toString());
 		params.forEach(query::setParameter);
 		return query.getResultList();
@@ -111,7 +113,8 @@ public class ReminderDaoImpl implements ReminderDao {
 	@Override
 	public List<ReminderDetailsVO> getReminderDetails(Integer reminderId) {
 		String queryStr = "select new com.medas.rewamp.clientnotificationservice.business.vo.reminder.ReminderDetailsVO(remarks, followupDate, createdDate) "
-				+ "from ReminderDetails where reminder.reminderId = :reminderId";
+				+ "from ReminderDetails where reminder.reminderId = :reminderId "
+				+ "order by createdDate desc";
 		return em.createQuery(queryStr).setParameter(ReminderConstants.REMINDER_ID, reminderId).getResultList();
 	}
 	

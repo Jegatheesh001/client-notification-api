@@ -20,5 +20,6 @@ public class ReminderUpdationVO {
 	@NotNull(message = "Reminder Id should not be blank")
 	private Integer reminderId;
 	private LocalDate followupDate;
+	private Integer followupBy;
 	private String remarks;
 }
