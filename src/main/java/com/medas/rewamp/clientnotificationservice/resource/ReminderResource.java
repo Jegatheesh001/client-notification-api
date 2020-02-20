@@ -56,6 +56,12 @@ public class ReminderResource {
 	
 	@Loggable
 	@GetMapping("/{reminderId}")
+	public ApiResponse<ReminderVO> getReminderById(@PathVariable Integer reminderId) {
+		return service.getReminderById(reminderId);
+	}
+	
+	@Loggable
+	@GetMapping("/{reminderId}/details")
 	public ApiResponse<List<ReminderDetailsVO>> getReminderDetails(@PathVariable Integer reminderId) {
 		return service.getReminderDetails(reminderId);
 	}

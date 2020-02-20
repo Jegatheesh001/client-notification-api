@@ -21,6 +21,8 @@ public interface ReminderDao {
 	boolean updateReminder(ReminderUpdationVO reminderVO);
 
 	List<ReminderVO> getAllReminders(ReminderSearchVO reminderVO);
+	
+	ReminderVO getReminderById(Integer reminderId);
 
 	List<ReminderDetailsVO> getReminderDetails(Integer reminderId);
 

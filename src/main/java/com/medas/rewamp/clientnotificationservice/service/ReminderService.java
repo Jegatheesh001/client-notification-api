@@ -46,6 +46,10 @@ public class ReminderService {
 		return new ApiResponse<>(dao.getAllReminders(reminderVO));
 	}
 
+	public ApiResponse<ReminderVO> getReminderById(Integer reminderId) {
+		return new ApiResponse<>(dao.getReminderById(reminderId));
+	}
+
 	public ApiResponse<List<ReminderDetailsVO>> getReminderDetails(Integer reminderId) {
 		return new ApiResponse<>(dao.getReminderDetails(reminderId));
 	}

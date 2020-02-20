@@ -15,6 +15,7 @@ import lombok.Data;
 @Data
 @ApiModel(description = "Reminder Master VO")
 public class ReminderVO {
+	private Integer reminderId;
 	private String reminderType;
 	private Integer reminderReferId;
 	private Integer createdBy;
@@ -27,6 +28,7 @@ public class ReminderVO {
 	/**
 	 * For query getAllReminders in ReminderDaoImpl
 	 * 
+	 * @param reminderId
 	 * @param reminderType
 	 * @param reminderReferId
 	 * @param createdBy
@@ -36,9 +38,10 @@ public class ReminderVO {
 	 * @param contact
 	 * @param closedStatus
 	 */
-	public ReminderVO(String reminderType, Integer reminderReferId, Integer createdBy, Integer followupBy,
+	public ReminderVO(Integer reminderId, String reminderType, Integer reminderReferId, Integer createdBy, Integer followupBy,
 			LocalDate followupDate, String subject, String contact, String closedStatus) {
 		super();
+		this.reminderId = reminderId;
 		this.reminderType = reminderType;
 		this.reminderReferId = reminderReferId;
 		this.createdBy = createdBy;

@@ -59,7 +59,7 @@ public class ReminderDaoImpl implements ReminderDao {
 
 	@Override
 	public List<ReminderVO> getAllReminders(ReminderSearchVO reminderVO) {
-		String queryStr = "select new com.medas.rewamp.clientnotificationservice.business.vo.reminder.ReminderVO(reminderType, reminderReferId, "
+		String queryStr = "select new com.medas.rewamp.clientnotificationservice.business.vo.reminder.ReminderVO(reminderId, reminderType, reminderReferId, "
 				+ "createdBy, followupBy, followupDate, subject, contact, closedStatus) "
 				+ "from ReminderHeader where reminderId > 0 ";
 		StringBuilder queryBuilder = new StringBuilder(queryStr);
@@ -68,6 +68,14 @@ public class ReminderDaoImpl implements ReminderDao {
 		Query query = em.createQuery(queryBuilder.toString());
 		params.forEach(query::setParameter);
 		return query.getResultList();
+	}
+	
+	@Override
+	public ReminderVO getReminderById(Integer reminderId) {
+		String queryStr = "select new com.medas.rewamp.clientnotificationservice.business.vo.reminder.ReminderVO(reminderId, reminderType, reminderReferId, "
+				+ "createdBy, followupBy, followupDate, subject, contact, closedStatus) "
+				+ "from ReminderHeader where reminderId = :reminderId ";
+		return (ReminderVO) em.createQuery(queryStr).setParameter("reminderId", reminderId).getSingleResult();
 	}
 
 	private void setReminderSearchParams(ReminderSearchVO reminderVO, StringBuilder queryBuilder,
