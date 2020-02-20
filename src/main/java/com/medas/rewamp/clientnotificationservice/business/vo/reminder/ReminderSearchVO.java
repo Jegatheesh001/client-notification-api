@@ -17,6 +17,8 @@ public class ReminderSearchVO {
 	private String subject;
 	private Integer createdBy;
 	private Integer followupBy;
+	private Integer listFor;
+	private String followDate;
 	private LocalDate followupDate;
 	private String closedStatus;
 }

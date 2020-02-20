@@ -20,6 +20,7 @@ import com.medas.rewamp.clientnotificationservice.business.vo.reminder.ReminderS
 import com.medas.rewamp.clientnotificationservice.business.vo.reminder.ReminderUpdationVO;
 import com.medas.rewamp.clientnotificationservice.business.vo.reminder.ReminderVO;
 import com.medas.rewamp.clientnotificationservice.persistence.ReminderDao;
+import com.medas.rewamp.clientnotificationservice.utils.DateUtil;
 
 /**
  * Reminder resource related queries
@@ -99,9 +100,13 @@ public class ReminderDaoImpl implements ReminderDao {
 				queryBuilder.append("and followupBy=:followupBy ");
 				params.put("followupBy", reminderVO.getFollowupBy());
 			}
-			if(reminderVO.getFollowupDate() != null) {
+			if (reminderVO.getListFor() != null && reminderVO.getListFor() > 0) {
+				queryBuilder.append("and (followupBy=:listFor or createdBy=:listFor) ");
+				params.put("listFor", reminderVO.getListFor());
+			}
+			if(reminderVO.getFollowDate() != null) {
 				queryBuilder.append("and followupDate=:followupDate ");
-				params.put("followupDate", reminderVO.getFollowupDate());
+				params.put("followupDate", DateUtil.parseDateToLDT(DateUtil.parseDate("6", reminderVO.getFollowDate())));
 			}
 			if (reminderVO.getClosedStatus() != null && !reminderVO.getClosedStatus().trim().isEmpty()) {
 				queryBuilder.append("and closedStatus=:closedStatus ");
@@ -112,7 +117,7 @@ public class ReminderDaoImpl implements ReminderDao {
 
 	@Override
 	public List<ReminderDetailsVO> getReminderDetails(Integer reminderId) {
-		String queryStr = "select new com.medas.rewamp.clientnotificationservice.business.vo.reminder.ReminderDetailsVO(remarks, followupDate, createdDate) "
+		String queryStr = "select new com.medas.rewamp.clientnotificationservice.business.vo.reminder.ReminderDetailsVO(remarks, followupDate, createdDate, createdBy) "
 				+ "from ReminderDetails where reminder.reminderId = :reminderId "
 				+ "order by createdDate desc";
 		return em.createQuery(queryStr).setParameter(ReminderConstants.REMINDER_ID, reminderId).getResultList();

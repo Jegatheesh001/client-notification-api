@@ -18,6 +18,7 @@ public class ReminderDetailsVO {
 	private String remarks;
 	private LocalDate followupDate;
 	private LocalDateTime createdDate;
+	private Integer createdBy;
 	
 	/**
 	 * For query getReminderDetails in ReminderDaoImpl
@@ -25,12 +26,14 @@ public class ReminderDetailsVO {
 	 * @param remarks
 	 * @param followupDate
 	 * @param createdDate
+	 * @param createdBy
 	 */
-	public ReminderDetailsVO(String remarks, LocalDate followupDate, LocalDateTime createdDate) {
+	public ReminderDetailsVO(String remarks, LocalDate followupDate, LocalDateTime createdDate, Integer createdBy) {
 		super();
 		this.remarks = remarks;
 		this.followupDate = followupDate;
 		this.createdDate = createdDate;
+		this.createdBy = createdBy;
 	}
 	
 }

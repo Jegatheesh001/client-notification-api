@@ -41,6 +41,8 @@ public class ReminderDetails {
 	private LocalDate followupDate;
 	@Column(nullable = false)
 	private LocalDateTime createdDate;
+	@Column(nullable = false)
+	private Integer createdBy;
 	
 	/**
 	 * Copying ReminderCreationVO values
@@ -50,6 +52,7 @@ public class ReminderDetails {
 	public ReminderDetails(ReminderCreationVO reminderVO) {
 		this.remarks = reminderVO.getRemarks();
 		this.followupDate = reminderVO.getFollowupDate();
+		this.createdBy = reminderVO.getCreatedBy();
 		this.createdDate = LocalDateTime.now();
 	}
 
@@ -63,5 +66,6 @@ public class ReminderDetails {
 		this.remarks = reminderVO.getRemarks();
 		this.followupDate = reminderVO.getFollowupDate();
 		this.createdDate = LocalDateTime.now();
+		this.createdBy = reminderVO.getCreatedBy();
 	}
 }

@@ -22,4 +22,5 @@ public class ReminderUpdationVO {
 	private LocalDate followupDate;
 	private Integer followupBy;
 	private String remarks;
+	private Integer createdBy;
 }
